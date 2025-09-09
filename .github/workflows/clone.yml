@@ -1,0 +1,29 @@
+name: Mirror Codeberg Repo
+
+on:
+  # Scheduled trigger (runs every hour; adjust as needed)
+  schedule:
+    - cron: '0 * * * *'
+  # Manual trigger from GitHub UI
+  workflow_dispatch:
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout GitHub repo
+        uses: actions/checkout@v3
+
+      - name: Clone Codeberg repo
+        run: |
+          git clone --depth=1 https://codeberg.org/username/repo.git temp-codeberg
+          rm -rf temp-codeberg/.git
+          cp -r temp-codeberg/* .
+          rm -rf temp-codeberg
+
+      - name: Commit and push changes
+        run: |
+          git add .
+          git commit -m "Mirror Codeberg repo" || echo "No changes to commit"
+          git push origin main
