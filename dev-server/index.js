@@ -6,6 +6,9 @@ const signup = require('./api/users/createUser');
 const session = require('./api/users/createSession');
 
 const app = express();
+app.get('/', (req, res) => {
+    res.json({ "message": "AmpMod API" });
+})
 app.use(express.json());
 app.use(create);
 app.use(api);
