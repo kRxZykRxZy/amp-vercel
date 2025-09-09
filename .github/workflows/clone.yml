@@ -1,22 +1,24 @@
 name: Mirror Codeberg Repo
 
 on:
-  # Scheduled trigger (every hour)
+  # Run every hour
   schedule:
     - cron: '0 * * * *'
-  # Manual trigger from GitHub UI
+  # Allow manual trigger
   workflow_dispatch:
 
 jobs:
   mirror:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write   # allow GITHUB_TOKEN to push
 
     steps:
       # Step 1: Checkout the current GitHub repo
       - name: Checkout GitHub repo
         uses: actions/checkout@v3
 
-      # Step 2: Clone the Codeberg repo
+      # Step 2: Clone Codeberg repo
       - name: Clone Codeberg repo
         run: |
           git clone --depth=1 https://codeberg.org/ampmod/ampmod-web-back.git temp-codeberg
@@ -27,12 +29,12 @@ jobs:
       # Step 3: Configure git for committing
       - name: Configure git
         run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      # Step 4: Commit and push changes to GitHub
+      # Step 4: Commit and push changes with GITHUB_TOKEN
       - name: Commit and push changes
         run: |
           git add .
           git commit -m "Mirror Codeberg repo" || echo "No changes to commit"
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/kRxZykRxZy/amp-vercel.git main
+          git push origin HEAD:main
