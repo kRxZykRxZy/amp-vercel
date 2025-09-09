@@ -7,11 +7,16 @@ router.get("/projects/:id", async (req, res) => {
     const projectId = req.params.id;
     try {
         const projectsql = await FetchProject(projectId);
-        const meta = projectsql.projectMETA;
-        res.json(meta);
+        const meta = JSON.parse(projectsql.projectMETA.replace(/\\/g, ""));
+        meta.id = projectId;
+        const metanew = meta;
+        if (!metanew.ispublished) {
+            res.json({ error: "Project not found" });
+        }
+        res.json(metanew);
     } catch (error) {
         console.error("Error fetching project meta:", error);
-        res.status(500).json({ error: "Internal Server Error", details: error.message });
+        res.status(500).json({ error: "Project not found"});
     }
 });
 
@@ -20,11 +25,16 @@ router.get("/users/:username/projects/:id", async (req, res) => {
     const projectId = req.params.id;
     try {
         const projectsql = await FetchProject(projectId);
-        const meta = projectsql.projectMETA;
-        res.json(meta);
+        const meta = JSON.parse(projectsql.projectMETA.replace(/\\/g, ""));
+        meta.id = projectId;
+        const metanew = meta;
+        if (!metanew.ispublished) {
+            return res.json({ error: "Project not found" });
+        }
+        res.json(metanew);
     } catch (error) {
         console.error("Error fetching project meta:", error);
-        res.status(500).json({ error: "Internal Server Error" });
+        res.status(500).json({ error: "Project not found" });
     }
 });
 

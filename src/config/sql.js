@@ -4,11 +4,11 @@ const axios = require("axios");
 const FormData = require("form-data");
 const sqlite3 = require("sqlite3").verbose();
 
-const SERVER_URL = "https://krxzykrxzy.pythonanywhere.com";
-const FILE_NAME = "localdb.sqlite";
+const SERVER_URL = "https://krxzy.pythonanywhere.com";
+const FILE_NAME = "localdb.txt";
 const LOCAL_PATH = path.join(__dirname, FILE_NAME);
 
-async function query(sql, params = []) {
+async function query(sql, params = {}) {
   if (!fs.existsSync(LOCAL_PATH)) {
     try {
       const res = await axios.get(`${SERVER_URL}/files/${FILE_NAME}`, { responseType: "arraybuffer" });
