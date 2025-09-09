@@ -15,4 +15,6 @@ app.use(api);
 app.use(signup);
 app.use(session);
 
-module.exports = app;
+app.listen(3000, () => {
+    console.log('Server is running on http://localhost:3000');
+});
