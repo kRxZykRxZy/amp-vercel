@@ -1,7 +1,7 @@
 name: Mirror Codeberg Repo
 
 on:
-  # Scheduled trigger (runs every hour; adjust as needed)
+  # Scheduled trigger (runs every hour)
   schedule:
     - cron: '0 * * * *'
   # Manual trigger from GitHub UI
@@ -17,7 +17,7 @@ jobs:
 
       - name: Clone Codeberg repo
         run: |
-          git clone --depth=1 https://codeberg.org/username/repo.git temp-codeberg
+          git clone --depth=1 https://codeberg.org/ampmod/ampmod-web-back.git temp-codeberg
           rm -rf temp-codeberg/.git
           cp -r temp-codeberg/* .
           rm -rf temp-codeberg
