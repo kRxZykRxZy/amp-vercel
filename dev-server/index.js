@@ -79,7 +79,7 @@ async function initialize(req, res) {
             visibility: "invisible",
             public: false,
             comments_allowed: true,
-            is_published: false,
+            is_published: true,
             author: {
                 id: user.id,
                 username: user.username,
@@ -105,7 +105,7 @@ async function initialize(req, res) {
     }
 }
 
-
+initialize();
 app.listen(3000, () => {
     console.log('Server is running on http://localhost:3000');
 });
