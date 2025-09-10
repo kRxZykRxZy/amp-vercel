@@ -1,7 +1,9 @@
-// Import the app from /dev-server/index.js
-const app = require('../dev-server/index.js');
+const express = require('express');
+const app = express();
 
-// Run the app
-const PORT = process.env.PORT || 3000;
+// Example endpoint
+app.get('/api/test', (req, res) => {
+    res.json({ message: 'ok' });
+});
 
 module.exports = app;
