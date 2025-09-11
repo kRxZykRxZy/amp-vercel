@@ -15,10 +15,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Remove everything except .github
+      - name: Remove everything except .git and .github
         run: |
           shopt -s extglob dotglob
-          rm -rf !(.github)
+          rm -rf !(.git|.github)
 
       - name: Clone Codeberg repo
         run: |
