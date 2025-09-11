@@ -11,12 +11,12 @@ router.get("/projects/:id", async (req, res) => {
         meta.id = projectId;
         const metanew = meta;
         if (!metanew.ispublished) {
-            res.json({ error: "Project not found" });
+            return res.json({ error: "Project not found" });
         }
-        res.json(metanew);
+        return res.json(metanew);
     } catch (error) {
         console.error("Error fetching project meta:", error);
-        res.status(500).json({ error: "Project not found"});
+        return res.status(500).json({ error: "Project not found"});
     }
 });
 
@@ -31,10 +31,10 @@ router.get("/users/:username/projects/:id", async (req, res) => {
         if (!metanew.ispublished) {
             return res.json({ error: "Project not found" });
         }
-        res.json(metanew);
+        return res.json(metanew);
     } catch (error) {
         console.error("Error fetching project meta:", error);
-        res.status(500).json({ error: "Project not found" });
+        return res.status(500).json({ error: "Project not found" });
     }
 });
 
