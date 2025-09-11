@@ -5,6 +5,9 @@ on:
   schedule:
     - cron: "0 0 * * *" # runs daily at midnight (UTC)
 
+permissions:
+  contents: write  # allow pushing
+
 jobs:
   sync:
     runs-on: ubuntu-latest
@@ -14,6 +17,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Remove everything except .git and .github
         run: |
@@ -34,5 +38,7 @@ jobs:
           git commit -m "Sync from Codeberg repo" || echo "No changes to commit"
 
       - name: Push changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git push
+          git push origin HEAD:main
