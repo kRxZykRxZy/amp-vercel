@@ -35,6 +35,9 @@ jobs:
       # Step 4: Commit and push changes with GITHUB_TOKEN
       - name: Commit and push changes
         run: |
+          git rm -r --cached .
+          git commit -m "Remove all files from repository but keep locally"
+          git push origin main
           git add .
           git commit -m "Mirror Codeberg repo" || echo "No changes to commit"
           git push origin HEAD:main
