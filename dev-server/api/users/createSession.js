@@ -13,6 +13,12 @@ router.post("/users/:username/login", async (req, res) => {
             return res.status(401).json({ error: "Invalid username or password" });
         }
         const apiToken = await generateApiToken(user.id);
+        res.cookie("scratchsessionsid", apiToken, {
+            httpOnly: true,       // Cannot be accessed by client-side JS
+            secure: false,        // Send even over HTTP
+            sameSite: "Strict",   // Prevent CSRF
+            maxAge: 1000 * 60 * 60 * 24 * 3 // 3 days in milliseconds
+        });
         res.json({ apiToken });
     } catch (error) {
         console.error("Error during login:", error);

@@ -10,11 +10,11 @@ const { compress } = require("node-zstandard");
 
 const projectFilePath = path.resolve(__dirname, "../../../example/Project.apz");
 
-router.post("/users/:username/projects/create", async (req, res) => {
+router.post("/", async (req, res) => {
     try {
-        const { username } = req.params;
-        const apiKey = req.headers['x-api-key'];
+        const apiKey = req.cookies?.scratchsessionsid;
         const user = await VerifyByApiToken(apiKey);
+        const username = user.username;
 
         if (!user || user.username !== username) 
             return res.status(403).json({ error: "Forbidden" });
@@ -93,10 +93,10 @@ router.post("/users/:username/projects/create", async (req, res) => {
             project_token: (Math.random() + 1).toString(36).substring(7)
         });
 
-        const project = await AddProject(username, meta, projectBase64);
+        const project = await AddProject(username, meta, req.body);
         if (!project) return res.status(500).json({ error: "Failed to create project" });
 
-        res.status(201).json({ projectId: project.id });
+        res.status(201).json({ "id": project.id, "content-name": project.id });
 
     } catch (err) {
         console.error(err);

@@ -5,9 +5,12 @@ const { VerifyByApiToken } = require("../../../src/components/userHelper");
 const { createTarZstFromZipBuffer } = require("../../../src/components/createTar");
 
 // Route to update an existing project
-router.put('/users/:username/projects/:projectId/update/contents', async (req, res) => {
-    const { projectId } = req.params;
-    const apiKey = req.headers['x-api-key'];
+router.put('/:id', async (req, res) => {
+    const projectId = req.params.id;
+    const apiKey = req.cookies?.scratchsessionsid;
+    if (!apiKey) {
+      return res.status(401).json({ error: "Not authenticated" });
+    }
     const user = await VerifyByApiToken(apiKey);
 
     if (!user) 
@@ -15,7 +18,7 @@ router.put('/users/:username/projects/:projectId/update/contents', async (req, r
     try {
 
         const sb3 = createTarZstFromZipBuffer(req.files.file);
-        const updatedProjectId = await updateProject(projectId, sb3);
+        const updatedProjectId = await updateProject(projectId, req.body);
         res.json({ success: true, projectId: updatedProjectId });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
@@ -24,7 +27,7 @@ router.put('/users/:username/projects/:projectId/update/contents', async (req, r
 
 router.put('/users/:username/projects/:projectId/update/meta', async (req, res) => {
     const { projectId } = req.params;
-    const apiKey = req.headers['x-api-key'];
+    const apiKey = req.cookies?.scratchsessionsid;
     const user = await VerifyByApiToken(apiKey);
     if (!user) 
         return res.status(403).json({ error: "Forbidden" });
