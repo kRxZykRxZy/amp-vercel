@@ -38,8 +38,6 @@ router.get("/users/:username/projects/:id", async (req, res) => {
     }
 });
 
-router.get("/projects/:id/projectJSON", (req, res) => {
-    res.json(FetchProject(req.params.id).bs64tarzstsb3);
-})
+router.get("/projectJSON/:id", async (req, res) => res.json({ project: (await FetchProject(req.params.id)).bs64tarzstsb3 }));
 
 module.exports = router;
