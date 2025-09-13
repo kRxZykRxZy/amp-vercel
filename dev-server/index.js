@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 const create = require('./api/projects/createProject');
-const api = require('./api/projects/projectMetaAPI');
+const api = require('./api/projects/projectAPI');
 const signup = require('./api/users/createUser');
 const session = require('./api/users/createSession');
 const { AddProject } = require('../src/components/projectHelper');
