@@ -3,7 +3,7 @@ name: Sync from Codeberg
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 0 * * *" # runs daily at midnight (UTC)
+    - cron: "* * * * *" # runs daily at midnight (UTC)
 
 permissions:
   contents: write  # allow pushing
