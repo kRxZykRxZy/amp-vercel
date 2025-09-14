@@ -4,6 +4,7 @@ const create = require('./api/projects/createProject');
 const api = require('./api/projects/projectAPI');
 const signup = require('./api/users/createUser');
 const session = require('./api/users/createSession');
+const assets = require('./api/projects/assetAPI');
 const { AddProject } = require('../src/components/projectHelper');
 const { VerifyByApiToken } = require("../src/components/userHelper");
 const fs = require("fs");
@@ -20,7 +21,7 @@ app.get('/', (req, res) => {
 app.use(express.json());
 app.use(create);
 app.use(api);
-app.use(signup);
+app.use(assets);app.use(signup);
 app.use(session);
 
 async function initialize(req, res) {
