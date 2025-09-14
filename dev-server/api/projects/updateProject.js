@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { updateProject, UpdateProjectMeta } = require("../../../src/components/projectHelper");
+const { updateProject, UpdateProjectMeta, FetchProject } = require("../../../src/components/projectHelper");
 const { VerifyByApiToken } = require("../../../src/components/userHelper");
 const { createTarZstFromZipBuffer } = require("../../../src/components/createTar");
 
@@ -12,6 +12,15 @@ router.put('/:id', async (req, res) => {
       return res.status(401).json({ error: "Not authenticated" });
     }
     const user = await VerifyByApiToken(apiKey);
+    const project = FetchProject(projectId);
+    const meta = project.meta;
+    if(req.query.title) {
+        meta.title = req.query.title;
+        UpdateProjectMeta(projectId, meta);
+    }
+    if(project?.meta?.author?.username == user) {
+        return res.json({ error: "Invalid Key" });
+    }
 
     if (!user) 
         return res.status(403).json({ error: "Forbidden" });

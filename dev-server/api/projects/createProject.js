@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { AddProject } = require('../../../src/components/projectHelper');
 const { VerifyByApiToken } = require("../../../src/components/userHelper");
+const { remixProject } = require("../../../components/remixProject");
 const fs = require("fs");
 const path = require("path");
 const AdmZip = require("adm-zip");
@@ -13,6 +14,9 @@ const projectFilePath = path.resolve(__dirname, "../../../example/Project.apz");
 router.post("/", async (req, res) => {
     try {
         const apiKey = req.cookies?.scratchsessionsid;
+        if(req.query.isRemix) {
+            remixProject(req.query.originalId);
+        }
         const user = await VerifyByApiToken(apiKey);
         const username = user.username;
 
