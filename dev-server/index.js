@@ -105,5 +105,4 @@ async function initialize(req, res) {
     }
 }
 
-initialize();
 module.exports = app;
