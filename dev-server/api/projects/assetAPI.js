@@ -4,7 +4,7 @@ const express = require('express'),
         query
     } = require('../../../src/config/sql');
 query(`CREATE TABLE IF NOT EXISTS Assets(id INTEGER PRIMARY KEY AUTOINCREMENT,md5 TEXT UNIQUE,ext TEXT,type TEXT,data BLOB,createdAt DATETIME DEFAULT CURRENT_TIMESTAMP)`);
-router.post('/internalapi/asset/md5ext/', async(req, res) => {
+router.post('/internalapi/asset/:md5ext/', async(req, res) => {
     const {
         md5,
         ext,
