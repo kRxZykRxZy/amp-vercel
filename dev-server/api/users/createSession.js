@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { verifyUser, generateApiToken } = require("../../../src/components/userHelper");
+const { verifyUser, generateApiToken, VerifyByApiToken } = require("../../../src/components/userHelper");
 
 router.post("/users/:username/login", async (req, res) => {
     const { username, password } = req.body;
@@ -25,5 +25,12 @@ router.post("/users/:username/login", async (req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 });
+
+router.get("/session", async (req, res) => {
+    const ssid = req.cookies.scratchsessionsid;
+    const user = await VerifyByApiToken(ssid);
+    res.json(user);
+});
+
 module.exports = router;
     
