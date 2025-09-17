@@ -5,7 +5,7 @@ const { createUser } = require("../../../src/components/userHelper");
 // Route to create a new user
 router.post("/users/:username/create", async (req, res) => {
     const { username } = req.params;
-    const { email, password} = req.body;
+    const { email, password } = req.body;
     if (!email || !password) {
         return res.status(400).json({ error: "Email and password are required" });
     }
