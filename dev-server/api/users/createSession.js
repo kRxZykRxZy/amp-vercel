@@ -9,14 +9,19 @@ router.post("/users/:username/login", async (req, res) => {
     const username = req.params.username;
     const { password } = req.body;
 
-    if (!username || !password) {
-        return res.status(400).json({ error: "Username and password are required" });
+    // Validation errors
+    const errors = {};
+    if (!username) errors.username = "Username is required";
+    if (!password) errors.password = "Password is required";
+
+    if (Object.keys(errors).length > 0) {
+        return res.status(400).json({ errors });
     }
 
     try {
         const user = await verifyUser(username, password);
         if (!user) {
-            return res.status(401).json({ error: "Invalid username or password" });
+            return res.status(401).json({ errors: { auth: "Invalid username or password" } });
         }
 
         const apiToken = await generateApiToken(user);
@@ -24,15 +29,22 @@ router.post("/users/:username/login", async (req, res) => {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: "Strict",
-            maxAge: 1000 * 60 * 60 * 24 * 3
+            maxAge: 1000 * 60 * 60 * 24 * 3, // 3 days
         });
 
-        res.json({ apiToken });
+        return res.json({ apiToken });
     } catch (error) {
         console.error("Error during login:", error);
-        res.status(500).json({ error: "Internal server error" });
+        // Include the error message in development, generic in production
+        const message =
+            process.env.NODE_ENV === "production"
+                ? "Internal server error"
+                : error.message || "Unknown error";
+
+        return res.status(500).json({ errors: { server: message } });
     }
 });
+
 
 router.get("/session", async (req, res) => {
     try {
