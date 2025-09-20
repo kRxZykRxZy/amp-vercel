@@ -14,12 +14,14 @@ const zstd = require("node-zstandard");
 const projectFilePath = path.resolve(__dirname, "../example/Project.apz");
 const cors = require('cors');
 
+
+const app = express();
+
 app.use(cors({
   origin: true,            // Reflects the request origin
   credentials: true        // Allows cookies to be sent
 }));
 
-const app = express();
 app.get('/', (req, res) => {
     res.json({ "message": "AmpMod API" });
 })
