@@ -14,6 +14,10 @@ const zstd = require("node-zstandard");
 const projectFilePath = path.resolve(__dirname, "../example/Project.apz");
 const cors = require('cors');
 
+app.use(cors({
+  origin: true,            // Reflects the request origin
+  credentials: true        // Allows cookies to be sent
+}));
 
 const app = express();
 app.get('/', (req, res) => {
@@ -107,9 +111,6 @@ async function initialize(req, res) {
     }
 }
 
-app.use(cors({
-  origin: true,            // Reflects the request origin
-  credentials: true        // Allows cookies to be sent
-}));
+
 
 module.exports = app;
