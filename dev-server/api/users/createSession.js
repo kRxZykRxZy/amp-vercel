@@ -48,7 +48,7 @@ router.post("/users/:username/login", async (req, res) => {
 
 router.get("/session", async (req, res) => {
     try {
-        const ssid = req.cookies.scratchsessionsid;
+        const ssid = req.body.apiToken;
         if (!ssid) return res.status(401).json({ error: "No session" });
 
         const user = await VerifyByApiToken(ssid);
