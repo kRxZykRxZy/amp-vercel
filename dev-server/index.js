@@ -12,6 +12,7 @@ const AdmZip = require("adm-zip");
 const tar = require("tar-stream");
 const zstd = require("node-zstandard");
 const projectFilePath = path.resolve(__dirname, "../example/Project.apz");
+const cors = require('cors');
 
 
 const app = express();
@@ -105,5 +106,10 @@ async function initialize(req, res) {
         if (res) res.status(500).json({ error: "Failed to create project" });
     }
 }
+
+app.use(cors({
+  origin: true,            // Reflects the request origin
+  credentials: true        // Allows cookies to be sent
+}));
 
 module.exports = app;
