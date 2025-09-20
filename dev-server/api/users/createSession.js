@@ -19,7 +19,7 @@ router.post("/users/:username/login", async (req, res) => {
             return res.status(401).json({ error: "Invalid username or password" });
         }
 
-        const apiToken = await generateApiToken(user.id);
+        const apiToken = await generateApiToken(user);
         res.cookie("scratchsessionsid", apiToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
