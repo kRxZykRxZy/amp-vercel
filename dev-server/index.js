@@ -10,6 +10,7 @@ const { VerifyByApiToken } = require("../src/components/userHelper");
 const fs = require("fs");
 const AdmZip = require("adm-zip");
 const tar = require("tar-stream");
+const cookieParser = require('cookieParser');
 const zstd = require("node-zstandard");
 const projectFilePath = path.resolve(__dirname, "../example/Project.apz");
 const cors = require('cors');
@@ -22,6 +23,7 @@ app.use(cors({
   credentials: true        // Allows cookies to be sent
 }));
 
+app.use(cookieParser());
 app.get('/', (req, res) => {
     res.json({ "message": "AmpMod API" });
 })

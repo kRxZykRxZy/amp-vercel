@@ -3,7 +3,6 @@ const router = express.Router();
 const cookieParser = require("cookie-parser");
 const { verifyUser, generateApiToken, VerifyByApiToken } = require("../../../src/components/userHelper");
 
-router.use(cookieParser());
 
 router.post("/users/:username/login", async (req, res) => {
     const username = req.params.username;
