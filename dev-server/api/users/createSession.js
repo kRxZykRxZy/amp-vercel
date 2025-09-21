@@ -52,6 +52,7 @@ router.post("/session", async (req, res) => {
 
         const user = await VerifyByApiToken(ssid);
         if (!user) return res.status(401).json({ error: "Invalid session" });
+        user.userMETA = JSON.parse(user.userMETA);
 
         res.json(user);
     } catch (error) {

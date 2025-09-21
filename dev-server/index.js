@@ -1,9 +1,15 @@
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
+const { AddProject } = require('../src/components/projectHelper');
+const { VerifyByApiToken } = require("../src/components/userHelper");
 const create = require('./api/projects/createProject');
 const api = require('./api/projects/projectAPI');
 const signup = require('./api/users/createUser');
 const session = require('./api/users/createSession');
+<<<<<<< HEAD
+
+=======
 const assets = require('./api/projects/assetAPI');
 const { AddProject } = require('../src/components/projectHelper');
 const { VerifyByApiToken } = require("../src/components/userHelper");
@@ -12,11 +18,13 @@ const AdmZip = require("adm-zip");
 const tar = require("tar-stream");
 const cookieParser = require('cookieParser');
 const zstd = require("node-zstandard");
+>>>>>>> 4d1273bcf77d40388f19bf6b2b2944536a580512
 const projectFilePath = path.resolve(__dirname, "../example/Project.apz");
 const cors = require('cors');
 
-
 const app = express();
+<<<<<<< HEAD
+=======
 
 app.use(cors({
   origin: true,            // Reflects the request origin
@@ -27,11 +35,16 @@ app.use(cookieParser());
 app.get('/', (req, res) => {
     res.json({ "message": "AmpMod API" });
 })
+>>>>>>> 4d1273bcf77d40388f19bf6b2b2944536a580512
 app.use(express.json());
 app.use(create);
 app.use(api);
 app.use(assets);app.use(signup);
 app.use(session);
+
+app.get('/', (req, res) => {
+    res.json({ message: "AmpMod API" });
+});
 
 async function initialize(req, res) {
     try {
@@ -42,43 +55,9 @@ async function initialize(req, res) {
         if (!user || user.username !== username) 
             return res.status(403).json({ error: "Forbidden" });
 
-        // Read zip file and convert to tar in memory
-        const zip = new AdmZip(projectFilePath);
-        const entries = zip.getEntries();
-        const pack = tar.pack();
-
-        for (const e of entries) {
-            const data = e.getData();
-            pack.entry({ name: e.entryName }, data);
-        }
-
-        pack.finalize();
-
-        // Collect tar chunks into a buffer
-        const tarChunks = [];
-        for await (const chunk of pack) tarChunks.push(chunk);
-        const tarBuffer = Buffer.concat(tarChunks);
-
-        // Write tar to temporary file
-        const tmpTarPath = path.join(__dirname, "temp.tar");
-        const tmpZstPath = path.join(__dirname, "temp.tar.zst");
-        fs.writeFileSync(tmpTarPath, tarBuffer);
-
-        // Compress using callback-based API
-        await new Promise((resolve, reject) => {
-            zstd.compress(tmpTarPath, tmpZstPath, 3, (err) => {
-                if (err) return reject(err);
-                resolve();
-            });
-        });
-
-        // Read compressed file into memory
-        const tarZstBuffer = fs.readFileSync(tmpZstPath);
-        const projectBase64 = tarZstBuffer.toString("base64");
-
-        // Clean up temp files
-        fs.unlinkSync(tmpTarPath);
-        fs.unlinkSync(tmpZstPath);
+        // Read the APZ file directly as Base64
+        const fileBuffer = fs.readFileSync(projectFilePath);
+        const projectBase64 = fileBuffer.toString('base64');
 
         // Build metadata
         const meta = {
@@ -115,6 +94,13 @@ async function initialize(req, res) {
     }
 }
 
+<<<<<<< HEAD
+// Initialize project on startup
+initialize();
+
+module.exports = app;
+=======
 
 
 module.exports = app;
+>>>>>>> 4d1273bcf77d40388f19bf6b2b2944536a580512

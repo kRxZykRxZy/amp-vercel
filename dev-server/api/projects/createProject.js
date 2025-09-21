@@ -1,3 +1,85 @@
+<<<<<<< HEAD
+const express = require("express");
+const router = express.Router();
+const { AddProject } = require('../../../src/components/projectHelper');
+const { VerifyByApiToken } = require("../../../src/components/userHelper");
+const fs = require("fs");
+const path = require("path");
+const AdmZip = require("adm-zip");
+const tar = require("tar-stream");
+
+const projectFilePath = path.resolve(__dirname, "../../../example/Project.apz");
+
+router.post("/users/:username/projects/create", async (req, res) => {
+    try {
+        const { username } = req.params;
+        const apiKey = req.headers['x-api-key'];
+        const user = await VerifyByApiToken(apiKey);
+
+        if (!user || user.username !== username) 
+            return res.status(403).json({ error: "Forbidden" });
+
+        // Read zip file and convert to tar
+        const zip = new AdmZip(projectFilePath);
+        const entries = zip.getEntries();
+        const pack = tar.pack();
+
+        entries.forEach(e => {
+            const data = e.getData();
+            pack.entry({ name: e.entryName }, data);
+        });
+
+        pack.finalize();
+
+        // Convert tar stream to Buffer
+        const tarChunks = [];
+        for await (const chunk of pack) tarChunks.push(chunk);
+        const tarBuffer = Buffer.concat(tarChunks);
+
+        // Convert tar Buffer to Base64 directly (no compression)
+        const projectBase64 = tarBuffer.toString("base64");
+
+        // Build metadata
+        const meta = JSON.stringify({
+            id: '',
+            title: "Untitled Project",
+            description: "",
+            instructions: "",
+            visibility: "invisible",
+            public: false,
+            comments_allowed: true,
+            is_published: false,
+            author: {
+                id: user.id,
+                username: user.username,
+                ampteam: false,
+                history: { joined: new Date().toISOString() },
+                profile: {
+                    id: null,
+                    images: { "90x90": "", "60x60": "", "55x55": "", "50x50": "", "32x32": "" }
+                }
+            },
+            image: "",
+            images: { "282x218": "", "216x163": "", "200x200": "", "144x108": "", "135x102": "", "100x80": "" },
+            history: { created: new Date().toISOString(), modified: "", shared: "" },
+            stats: { views: 0, loves: 0, favorites: 0, remixes: 0 },
+            remix: { parent: null, root: null },
+            project_token: (Math.random() + 1).toString(36).substring(7)
+        });
+
+        const project = await AddProject(username, meta, projectBase64);
+        if (!project) return res.status(500).json({ error: "Failed to create project" });
+
+        res.status(201).json({ projectId: project.id });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+module.exports = router;
+=======
 const express = require("express");
 const router = express.Router();
 const { AddProject } = require('../../../src/components/projectHelper');
@@ -109,3 +191,4 @@ router.post("/", async (req, res) => {
 });
 
 module.exports = router;
+>>>>>>> 4d1273bcf77d40388f19bf6b2b2944536a580512
